@@ -58,9 +58,9 @@ public class User implements Serializable {
 
     public String getFullName() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(firstName)
-                .append(" ,")
-                .append(lastName);
+        stringBuilder.append(lastName)
+                .append(", ")
+                .append(firstName);
         return stringBuilder.toString();
     }
 
