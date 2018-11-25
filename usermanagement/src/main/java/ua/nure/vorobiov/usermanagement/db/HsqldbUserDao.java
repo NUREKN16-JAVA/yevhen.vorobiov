@@ -2,10 +2,7 @@ package ua.nure.vorobiov.usermanagement.db;
 
 import ua.nure.vorobiov.usermanagement.User;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Collection;
 
 public class HsqldbUserDao implements UserDao {
@@ -30,10 +27,15 @@ public class HsqldbUserDao implements UserDao {
             if (insertedRows != 1) {
                 throw new DatabaseException("Number of the inserted rows: " + insertedRows);
             }
+            CallableStatement callableStatement = connection.prepareCall("call IDENTITY()");
+            ResultSet resultSet = callableStatement.executeQuery();
+            if (resultSet.next()) {
+                user.setId(resultSet.getLong(1));
+            }
+            return user;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         }
-        return null;
     }
 
     @Override
