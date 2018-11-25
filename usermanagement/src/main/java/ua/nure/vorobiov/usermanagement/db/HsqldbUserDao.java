@@ -16,9 +16,11 @@ public class HsqldbUserDao implements UserDao {
 
     @Override
     public User create(User user) throws DatabaseException {
-        try {
-            Connection connection = connectionFactory.createConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY);
+        PreparedStatement preparedStatement = null;
+        CallableStatement callableStatement = null;
+        ResultSet resultSet = null;
+        try (Connection connection = connectionFactory.createConnection()) {
+            preparedStatement = connection.prepareStatement(INSERT_QUERY);
             int count = 1;
             preparedStatement.setString(count++, user.getFirstName());
             preparedStatement.setString(count++, user.getLastName());
@@ -27,14 +29,22 @@ public class HsqldbUserDao implements UserDao {
             if (insertedRows != 1) {
                 throw new DatabaseException("Number of the inserted rows: " + insertedRows);
             }
-            CallableStatement callableStatement = connection.prepareCall("call IDENTITY()");
-            ResultSet resultSet = callableStatement.executeQuery();
+            callableStatement = connection.prepareCall("call IDENTITY()");
+            resultSet = callableStatement.executeQuery();
             if (resultSet.next()) {
                 user.setId(resultSet.getLong(1));
             }
             return user;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
+        } finally {
+            try {
+                preparedStatement.close();
+                callableStatement.close();
+                resultSet.close();
+            } catch (SQLException e) {
+                throw new DatabaseException(e.getMessage());
+            }
         }
     }
 
