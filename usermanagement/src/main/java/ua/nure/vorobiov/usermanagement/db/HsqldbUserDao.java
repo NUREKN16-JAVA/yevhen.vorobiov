@@ -5,6 +5,13 @@ import ua.nure.vorobiov.usermanagement.User;
 import java.util.Collection;
 
 public class HsqldbUserDao implements UserDao {
+
+    private ConnectionFactory connectionFactory;
+
+    public HsqldbUserDao(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
+
     @Override
     public User create(User user) throws DatabaseException {
         return null;

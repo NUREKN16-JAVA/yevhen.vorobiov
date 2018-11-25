@@ -10,13 +10,15 @@ import static org.junit.Assert.*;
 
 public class HsqldbUserDaoTest {
 
-    public static final String FIRST_NAME = "FirstName";
-    public static final String LAST_NAME = "LastName";
+    private static final String FIRST_NAME = "FirstName";
+    private static final String LAST_NAME = "LastName";
     private UserDao dao;
+    private ConnectionFactory connectionFactory;
 
     @Before
     public void setUp() {
-        dao = new HsqldbUserDao();
+        connectionFactory = new ConnectionFactoryImpl();
+        dao = new HsqldbUserDao(connectionFactory);
     }
 
     @Test
