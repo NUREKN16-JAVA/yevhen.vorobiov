@@ -9,6 +9,7 @@ import java.util.Objects;
 
 public class User implements Serializable {
 
+    public static final String FULL_NAME_SEPARATOR = ", ";
     private Long id;
     private String firstName;
     private String lastName;
@@ -59,7 +60,7 @@ public class User implements Serializable {
     public String getFullName() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(lastName)
-                .append(", ")
+                .append(FULL_NAME_SEPARATOR)
                 .append(firstName);
         return stringBuilder.toString();
     }
