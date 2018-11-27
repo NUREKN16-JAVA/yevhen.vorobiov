@@ -1,30 +1,37 @@
 package ua.nure.vorobiov.usermanagement.db;
 
 import ua.nure.vorobiov.usermanagement.User;
+import ua.nure.vorobiov.usermanagement.db.util.DbUtils;
 
 import java.sql.*;
 import java.util.Collection;
 import java.util.LinkedList;
 
-public class HsqldbUserDao implements UserDao {
+class HsqldbUserDao implements UserDao {
 
     private static final String INSERT_QUERY = "INSERT INTO users (firstname, lastname, dateofbirth) VALUES (?, ?, ?)";
     private static final String SELECT_ALL_QUERY = "SELECT * FROM users";
+    private static final String SELECT_BY_ID_QUERY = "SELECT * FROM users WHERE id = ?";
+    private static final String DELETE_QUERY = "DELETE FROM users WHERE id = ?";
+    private static final String UPDATE_QUERY = "UPDATE users SET firstname = ?, lastname = ?, dateofbirth = ?  WHERE id = ?";
+    private static final String CALL_IDENTITY = "CALL IDENTITY()";
 
     private ConnectionFactory connectionFactory;
 
     public HsqldbUserDao() {
     }
 
-    public HsqldbUserDao(ConnectionFactory connectionFactory) {
+    HsqldbUserDao(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 
     @Override
     public User create(User user) throws DatabaseException {
-        try {
-            Connection connection = connectionFactory.createConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY);
+        PreparedStatement preparedStatement = null;
+        CallableStatement callableStatement = null;
+        ResultSet resultSet = null;
+        try (Connection connection = connectionFactory.createConnection()) {
+            preparedStatement = connection.prepareStatement(INSERT_QUERY);
             int count = 1;
             preparedStatement.setString(count++, user.getFirstName());
             preparedStatement.setString(count++, user.getLastName());
@@ -33,49 +40,96 @@ public class HsqldbUserDao implements UserDao {
             if (insertedRows != 1) {
                 throw new DatabaseException("Number of the inserted rows: " + insertedRows);
             }
-            CallableStatement callableStatement = connection.prepareCall("CALL IDENTITY()");
-            ResultSet resultSet = callableStatement.executeQuery();
+            callableStatement = connection.prepareCall(CALL_IDENTITY);
+            resultSet = callableStatement.executeQuery();
             if (resultSet.next()) {
                 user.setId(resultSet.getLong(1));
             }
-            resultSet.close();
-            preparedStatement.close();
-            callableStatement.close();
-            connection.close();
             return user;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
+        } finally {
+            DbUtils.closeResultSet(resultSet);
+            DbUtils.closeStatements(preparedStatement, callableStatement);
         }
     }
 
     @Override
     public void update(User user) throws DatabaseException {
-
+        PreparedStatement preparedStatement = null;
+        try (Connection connection = connectionFactory.createConnection()) {
+            preparedStatement = connection.prepareStatement(UPDATE_QUERY);
+            int count = 1;
+            preparedStatement.setString(count++, user.getFirstName());
+            preparedStatement.setString(count++, user.getLastName());
+            preparedStatement.setDate(count++, new Date(user.getDateOfBirth().getTime()));
+            preparedStatement.setLong(count, user.getId());
+            int updatedRows = preparedStatement.executeUpdate();
+            if (updatedRows != 1) {
+                throw new DatabaseException("Exception while update operation. Effected rows: " + updatedRows);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DbUtils.closeStatements(preparedStatement);
+        }
     }
 
     @Override
     public void delete(User user) throws DatabaseException {
-
+        PreparedStatement preparedStatement = null;
+        try (Connection connection = connectionFactory.createConnection()) {
+            preparedStatement = connection.prepareStatement(DELETE_QUERY);
+            preparedStatement.setLong(1, user.getId());
+            int updatedRows = preparedStatement.executeUpdate();
+            if (updatedRows != 1) {
+                throw new DatabaseException("Exception while delete operation. Effected rows: " + updatedRows);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DbUtils.closeStatements(preparedStatement);
+        }
     }
 
     @Override
     public User find(Long id) throws DatabaseException {
-        return null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try (Connection connection = connectionFactory.createConnection()) {
+            User user = null;
+            preparedStatement = connection.prepareStatement(SELECT_BY_ID_QUERY);
+            preparedStatement.setLong(1, id);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                user = mapUser(resultSet);
+            }
+            return user;
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DbUtils.closeStatements(preparedStatement);
+            DbUtils.closeResultSet(resultSet);
+        }
     }
 
     @Override
     public Collection<User> findAll() throws DatabaseException {
-        try {
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try (Connection connection = connectionFactory.createConnection()) {
             Collection<User> users = new LinkedList<>();
-            Connection connection = connectionFactory.createConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(SELECT_ALL_QUERY);
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(SELECT_ALL_QUERY);
             while (resultSet.next()) {
                 users.add(mapUser(resultSet));
             }
             return users;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
+        } finally {
+            DbUtils.closeStatements(statement);
+            DbUtils.closeResultSet(resultSet);
         }
     }
 
