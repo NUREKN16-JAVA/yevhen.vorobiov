@@ -95,7 +95,7 @@ public class HsqldbUserDaoTest extends DatabaseTestCase {
         User testUser = createUser();
         try {
             dao.update(testUser);
-            User updatedUser = dao.find(testUser.getId());
+            User updatedUser = dao.find(TEST_ID);
 
             assertEquals(FIRST_NAME, updatedUser.getFirstName());
             assertEquals(LAST_NAME, updatedUser.getLastName());
