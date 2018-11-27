@@ -16,35 +16,29 @@ public class HsqldbUserDao implements UserDao {
 
     @Override
     public User create(User user) throws DatabaseException {
-        PreparedStatement preparedStatement = null;
-        CallableStatement callableStatement = null;
-        ResultSet resultSet = null;
-        try (Connection connection = connectionFactory.createConnection()) {
-            preparedStatement = connection.prepareStatement(INSERT_QUERY);
+        try {
+            Connection connection = connectionFactory.createConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY);
             int count = 1;
             preparedStatement.setString(count++, user.getFirstName());
             preparedStatement.setString(count++, user.getLastName());
-            preparedStatement.setDate(count, (Date) user.getDateOfBirth());
+            preparedStatement.setDate(count, new Date(user.getDateOfBirth().getTime()));
             int insertedRows = preparedStatement.executeUpdate();
             if (insertedRows != 1) {
                 throw new DatabaseException("Number of the inserted rows: " + insertedRows);
             }
-            callableStatement = connection.prepareCall("call IDENTITY()");
-            resultSet = callableStatement.executeQuery();
+            CallableStatement callableStatement = connection.prepareCall("CALL IDENTITY()");
+            ResultSet resultSet = callableStatement.executeQuery();
             if (resultSet.next()) {
                 user.setId(resultSet.getLong(1));
             }
+            resultSet.close();
+            preparedStatement.close();
+            callableStatement.close();
+            connection.close();
             return user;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
-        } finally {
-            try {
-                preparedStatement.close();
-                callableStatement.close();
-                resultSet.close();
-            } catch (SQLException e) {
-                throw new DatabaseException(e.getMessage());
-            }
         }
     }
 
