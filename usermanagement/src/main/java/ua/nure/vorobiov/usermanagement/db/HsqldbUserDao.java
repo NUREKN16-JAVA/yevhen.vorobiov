@@ -97,14 +97,13 @@ class HsqldbUserDao implements UserDao {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try (Connection connection = connectionFactory.createConnection()) {
-            User user = null;
             preparedStatement = connection.prepareStatement(SELECT_BY_ID_QUERY);
             preparedStatement.setLong(1, id);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                user = mapUser(resultSet);
+                return mapUser(resultSet);
             }
-            return user;
+            throw new DatabaseException("Can not find user by id: " + id);
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         } finally {
