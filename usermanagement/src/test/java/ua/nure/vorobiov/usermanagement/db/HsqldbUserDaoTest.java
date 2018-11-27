@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import ua.nure.vorobiov.usermanagement.User;
 
+import java.util.Collection;
 import java.util.Date;
 
 public class HsqldbUserDaoTest extends DatabaseTestCase {
@@ -49,6 +50,19 @@ public class HsqldbUserDaoTest extends DatabaseTestCase {
 
             assertNotNull(testUser);
             assertNotNull(testUser.getId());
+        } catch (DatabaseException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGetAll() {
+        int expectedUsersNumber = 2;
+        try {
+            Collection<User> users = dao.findAll();
+
+            assertNotNull(users);
+            assertEquals(expectedUsersNumber, users.size());
         } catch (DatabaseException e) {
             fail(e.getMessage());
         }
