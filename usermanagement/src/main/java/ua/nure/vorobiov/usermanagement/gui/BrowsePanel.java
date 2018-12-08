@@ -1,6 +1,7 @@
 package ua.nure.vorobiov.usermanagement.gui;
 
 import ua.nure.vorobiov.usermanagement.gui.main.MainFrame;
+import ua.nure.vorobiov.usermanagement.util.Messages;
 
 import javax.swing.*;
 import java.awt.*;
@@ -59,7 +60,7 @@ public class BrowsePanel extends JPanel implements ActionListener {
     private JButton getAddButton() {
         if (Objects.isNull(addButton)) {
             addButton = new JButton();
-            addButton.setText("Добаваить");
+            addButton.setText(Messages.getString("BrowsePanel.addButton"));
             addButton.setName(ADD_BUTTON);
             addButton.setActionCommand("add");
             addButton.addActionListener(this);
@@ -70,7 +71,7 @@ public class BrowsePanel extends JPanel implements ActionListener {
     private JButton getEditButton() {
         if (Objects.isNull(editButton)) {
             editButton = new JButton();
-            editButton.setText("Изменить");
+            editButton.setText(Messages.getString("editButton"));
             editButton.setName(EDIT_BUTTON);
             editButton.setActionCommand("edit");
             editButton.addActionListener(this);
@@ -81,7 +82,7 @@ public class BrowsePanel extends JPanel implements ActionListener {
     private JButton getDeleteButton() {
         if (Objects.isNull(deleteButton)) {
             deleteButton = new JButton();
-            deleteButton.setText("Удалить");
+            deleteButton.setText(Messages.getString("deleteButton"));
             deleteButton.setName(DELETE_BUTTON);
             deleteButton.setActionCommand("delete");
             deleteButton.addActionListener(this);
@@ -92,7 +93,7 @@ public class BrowsePanel extends JPanel implements ActionListener {
     private JButton getDetailsButton() {
         if (Objects.isNull(detailsButton)) {
             detailsButton = new JButton();
-            detailsButton.setText("Детали");
+            detailsButton.setText(Messages.getString("detailsButton"));
             detailsButton.setName(DETAILS_BUTTON);
             detailsButton.setActionCommand("details");
             detailsButton.addActionListener(this);

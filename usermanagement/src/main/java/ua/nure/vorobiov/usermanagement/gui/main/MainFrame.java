@@ -2,6 +2,7 @@ package ua.nure.vorobiov.usermanagement.gui.main;
 
 import ua.nure.vorobiov.usermanagement.gui.AddPanel;
 import ua.nure.vorobiov.usermanagement.gui.BrowsePanel;
+import ua.nure.vorobiov.usermanagement.util.Messages;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +25,7 @@ public class MainFrame extends JFrame {
     private void initialize() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        this.setTitle("Управление пользователями");
+        this.setTitle(Messages.getString("userManagement"));
         this.setContentPane(getContentPanel());
     }
 

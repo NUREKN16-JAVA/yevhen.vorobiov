@@ -1,6 +1,7 @@
 package ua.nure.vorobiov.usermanagement.gui;
 
 import ua.nure.vorobiov.usermanagement.gui.main.MainFrame;
+import ua.nure.vorobiov.usermanagement.util.Messages;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,9 +50,9 @@ public class AddPanel extends JPanel implements ActionListener {
         if (Objects.isNull(fieldPanel)) {
             fieldPanel = new JPanel();
             fieldPanel.setLayout(new GridLayout(ROWS, COLS));
-            addLabeledField(fieldPanel, "Имя", getFirstNameField());
-            addLabeledField(fieldPanel, "Фамилия", getLastNameField());
-            addLabeledField(fieldPanel, "Дата Рождения", getDateOfBirthField());
+            addLabeledField(fieldPanel, Messages.getString("name"), getFirstNameField());
+            addLabeledField(fieldPanel, Messages.getString("lastName"), getLastNameField());
+            addLabeledField(fieldPanel, Messages.getString("dateOfBirth"), getDateOfBirthField());
         }
         return fieldPanel;
     }
@@ -75,7 +76,7 @@ public class AddPanel extends JPanel implements ActionListener {
     private JButton getOkButton() {
         if (Objects.isNull(okButton)) {
             okButton = new JButton();
-            okButton.setText("Добавить");
+            okButton.setText(Messages.getString("addButton"));
             okButton.setName(OK_BUTTON);
             okButton.setActionCommand("cancel");
             okButton.addActionListener(this);
@@ -86,7 +87,7 @@ public class AddPanel extends JPanel implements ActionListener {
     private JButton getCancelButton() {
         if (Objects.isNull(cancelButton)) {
             cancelButton = new JButton();
-            cancelButton.setText("Отмена");
+            cancelButton.setText(Messages.getString("cancelButton"));
             cancelButton.setName(CANCEL_BUTTON);
             cancelButton.setActionCommand("ok");
             cancelButton.addActionListener(this);
