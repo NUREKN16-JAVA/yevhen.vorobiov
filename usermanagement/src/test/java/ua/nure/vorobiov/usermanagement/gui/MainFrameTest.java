@@ -15,6 +15,13 @@ public class MainFrameTest extends JFCTestCase {
 
     private MainFrame mainFrame;
 
+    private static final String BROWSE_PANEL = "browsePanel";
+    private static final String USER_TABLE = "userTable";
+    private static final String ADD_BUTTON = "addButton";
+    private static final String EDIT_BUTTON = "editButton";
+    private static final String DELETE_BUTTON = "deleteButton";
+    private static final String DETAILS_BUTTON = "detailsButton";
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -24,12 +31,12 @@ public class MainFrameTest extends JFCTestCase {
     }
 
     public void testBrowseControls() {
-        find(JPanel.class, "browsePanel");
-        find(JTable.class, "userTable");
-        find(JButton.class, "addButton");
-        find(JButton.class, "editButton");
-        find(JButton.class, "deleteButton");
-        find(JButton.class, "detailsButon");
+        find(JPanel.class, BROWSE_PANEL);
+        find(JTable.class, USER_TABLE);
+        find(JButton.class, ADD_BUTTON);
+        find(JButton.class, EDIT_BUTTON);
+        find(JButton.class, DELETE_BUTTON);
+        find(JButton.class, DETAILS_BUTTON);
     }
 
     @After
