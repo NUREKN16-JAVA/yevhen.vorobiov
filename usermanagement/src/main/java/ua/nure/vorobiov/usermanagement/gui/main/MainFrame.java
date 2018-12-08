@@ -1,5 +1,7 @@
 package ua.nure.vorobiov.usermanagement.gui.main;
 
+import ua.nure.vorobiov.usermanagement.db.DaoFactory;
+import ua.nure.vorobiov.usermanagement.db.UserDao;
 import ua.nure.vorobiov.usermanagement.gui.AddPanel;
 import ua.nure.vorobiov.usermanagement.gui.BrowsePanel;
 import ua.nure.vorobiov.usermanagement.util.Messages;
@@ -16,10 +18,16 @@ public class MainFrame extends JFrame {
     private JPanel contentPanel;
     private JPanel browsePanel;
     private AddPanel addPanel;
+    private UserDao userDao;
 
     public MainFrame() throws HeadlessException {
         super();
+        userDao = DaoFactory.getInstance().getUserDao();
         initialize();
+    }
+
+    public UserDao getUserDao() {
+        return userDao;
     }
 
     private void initialize() {
@@ -47,6 +55,7 @@ public class MainFrame extends JFrame {
         if (Objects.isNull(browsePanel)) {
             browsePanel = new BrowsePanel(this);
         }
+        ((BrowsePanel) browsePanel).initTable();
         return browsePanel;
     }
 
@@ -65,5 +74,9 @@ public class MainFrame extends JFrame {
             addPanel = new AddPanel(this);
         }
         return addPanel;
+    }
+
+    public void showBrowsePanel() {
+        showPanel(getBrowsePanel());
     }
 }

@@ -9,6 +9,9 @@ import junit.extensions.jfcunit.finder.NamedComponentFinder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ua.nure.vorobiov.usermanagement.db.DaoFactory;
+import ua.nure.vorobiov.usermanagement.db.DaoFactoryImpl;
+import ua.nure.vorobiov.usermanagement.db.MockUserDao;
 import ua.nure.vorobiov.usermanagement.gui.main.MainFrame;
 import ua.nure.vorobiov.usermanagement.util.Messages;
 
@@ -16,11 +19,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Properties;
 
 public class MainFrameTest extends JFCTestCase {
 
     private MainFrame mainFrame;
 
+    private static final String DAO_IMPL_PROPERTY = "dao.ua.nure.vorobiov.usermanagement.db.UserDao";
+    private static final String DAO_FACTORY_PROPERTY = "dao.factory";
     private static final String ID = Messages.getString("id");
     private static final String FIRST_NAME = Messages.getString("name");
     private static final String LAST_NAME = Messages.getString("lastName");
@@ -40,6 +46,10 @@ public class MainFrameTest extends JFCTestCase {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        Properties properties = new Properties();
+        properties.setProperty(DAO_IMPL_PROPERTY, MockUserDao.class.getName());
+        properties.setProperty(DAO_FACTORY_PROPERTY, DaoFactoryImpl.class.getName());
+        DaoFactory.init(properties);
         setHelper(new JFCTestHelper());
         mainFrame = new MainFrame();
         mainFrame.setVisible(true);

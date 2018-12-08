@@ -1,5 +1,6 @@
 package ua.nure.vorobiov.usermanagement.gui;
 
+import ua.nure.vorobiov.usermanagement.db.DatabaseException;
 import ua.nure.vorobiov.usermanagement.gui.main.MainFrame;
 import ua.nure.vorobiov.usermanagement.util.Messages;
 
@@ -18,6 +19,7 @@ public class BrowsePanel extends JPanel implements ActionListener {
     private static final String DELETE_BUTTON = "deleteButton";
     private static final String DETAILS_BUTTON = "detailsButton";
     private static final String USER_TABLE = "userTable";
+    private static final String ERROR_TITLE = "Error";
 
     private MainFrame parent;
     private JScrollPane tablePanel;
@@ -115,9 +117,20 @@ public class BrowsePanel extends JPanel implements ActionListener {
         if (Objects.isNull(userTable)) {
             userTable = new JTable();
             userTable.setName(USER_TABLE);
-            UserTableModel model = new UserTableModel(Collections.emptyList());
-            userTable.setModel(model);
         }
+        initTable();
         return userTable;
+    }
+
+    public void initTable() {
+        UserTableModel model;
+        try {
+            model = new UserTableModel(parent.getUserDao().findAll());
+        } catch (DatabaseException e) {
+            model = new UserTableModel(Collections.emptyList());
+            JOptionPane.showMessageDialog(this, e.getMessage(), ERROR_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        userTable.setModel(model);
     }
 }

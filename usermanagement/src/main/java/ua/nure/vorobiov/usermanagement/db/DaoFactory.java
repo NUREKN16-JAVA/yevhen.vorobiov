@@ -16,8 +16,7 @@ public abstract class DaoFactory {
     static {
         properties = new Properties();
         try {
-            properties.load(DaoFactory.class.getClassLoader().getResourceAsStream(
-                    PROPERTIES_FILE));
+            properties.load(DaoFactory.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -45,8 +44,8 @@ public abstract class DaoFactory {
         return instance;
     }
 
-    public void init(Properties properties) {
-        this.properties = properties;
+    public static void init(Properties initProperties) {
+        properties = initProperties;
         instance = null;
     }
 

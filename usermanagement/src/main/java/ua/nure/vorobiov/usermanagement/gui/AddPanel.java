@@ -1,5 +1,7 @@
 package ua.nure.vorobiov.usermanagement.gui;
 
+import ua.nure.vorobiov.usermanagement.User;
+import ua.nure.vorobiov.usermanagement.db.DatabaseException;
 import ua.nure.vorobiov.usermanagement.gui.main.MainFrame;
 import ua.nure.vorobiov.usermanagement.util.Messages;
 
@@ -7,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Objects;
 
 public class AddPanel extends JPanel implements ActionListener {
@@ -19,6 +23,7 @@ public class AddPanel extends JPanel implements ActionListener {
     private static final String DATE_OF_BIRTH_FIELD = "dateOfBirthField";
     private static final String FIRST_NAME_FIELD = "firstNameField";
     private static final String LAST_NAME_FIELD = "lastNameField";
+    private static final Color backColor = Color.WHITE;
 
     private final MainFrame parent;
     private JPanel fieldPanel;
@@ -36,7 +41,39 @@ public class AddPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if ("ok".equalsIgnoreCase(e.getActionCommand())) {
+            User user = new User();
+            user.setFirstName(getFirstNameField().getText());
+            user.setLastName(getLastNameField().getText());
+            user.setLastName(getLastNameField().getText());
+            DateFormat format = DateFormat.getDateInstance();
+            try {
+                user.setDateOfBirth(format.parse(getDateOfBirthField().getText()));
+            } catch (ParseException e1) {
+                getDateOfBirthField().setBackground(Color.RED);
+                return;
+            }
+            try {
+                parent.getUserDao().create(user);
+            } catch (DatabaseException e1) {
+                JOptionPane.showMessageDialog(this, e1.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        clearFields();
+        setVisible(false);
+        parent.showBrowsePanel();
+    }
 
+    private void clearFields() {
+        getDateOfBirthField().setText("");
+        getDateOfBirthField().setBackground(backColor);
+
+        getFirstNameField().setText("");
+        getFirstNameField().setBackground(backColor);
+
+        getLastNameField().setText("");
+        getLastNameField().setBackground(backColor);
     }
 
     private void initialize() {
