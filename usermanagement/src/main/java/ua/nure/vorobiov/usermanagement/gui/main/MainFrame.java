@@ -1,5 +1,6 @@
 package ua.nure.vorobiov.usermanagement.gui.main;
 
+import ua.nure.vorobiov.usermanagement.gui.AddPanel;
 import ua.nure.vorobiov.usermanagement.gui.BrowsePanel;
 
 import javax.swing.*;
@@ -13,6 +14,7 @@ public class MainFrame extends JFrame {
 
     private JPanel contentPanel;
     private JPanel browsePanel;
+    private AddPanel addPanel;
 
     public MainFrame() throws HeadlessException {
         super();
@@ -45,5 +47,22 @@ public class MainFrame extends JFrame {
             browsePanel = new BrowsePanel(this);
         }
         return browsePanel;
+    }
+
+    public void showAddPanel() {
+        showPanel(getAddPanel());
+    }
+
+    private void showPanel(JPanel panel) {
+        getContentPane().add(panel, BorderLayout.CENTER);
+        panel.setVisible(true);
+        panel.repaint();
+    }
+
+    public AddPanel getAddPanel() {
+        if (Objects.isNull(addPanel)) {
+            addPanel = new AddPanel();
+        }
+        return addPanel;
     }
 }
