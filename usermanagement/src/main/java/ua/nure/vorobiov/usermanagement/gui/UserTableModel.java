@@ -1,6 +1,7 @@
 package ua.nure.vorobiov.usermanagement.gui;
 
 import ua.nure.vorobiov.usermanagement.User;
+import ua.nure.vorobiov.usermanagement.util.Messages;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -9,7 +10,8 @@ import java.util.List;
 
 public class UserTableModel extends AbstractTableModel {
 
-    private final String[] COLUMN_NAMES = new String[]{"ID", "Имя", "Фамилия"};
+    private final String[] COLUMN_NAMES = new String[]{Messages.getString("id"), Messages.getString("name"),
+            Messages.getString("lastName")};
     private final Class[] COLUMN_CLASSES = {Long.class, String.class, String.class};
 
     private List<User> users;
