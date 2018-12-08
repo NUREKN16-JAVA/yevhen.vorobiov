@@ -3,20 +3,31 @@ package ua.nure.vorobiov.usermanagement.db;
 import java.io.IOException;
 import java.util.Properties;
 
-public class DaoFactory {
+public abstract class DaoFactory {
 
-    private static final String USER_DAO = "dao.ua.nure.vorobiov.usermanagement.db.UserDao";
+    protected static final String USER_DAO = "dao.ua.nure.vorobiov.usermanagement.db.UserDao";
     private static final String CONNECTION_DRIVER = "connection.driver";
     private static final String CONNECTION_URL = "connection.url";
     private static final String CONNECTION_USER = "connection.user";
     private static final String CONNECTION_PASSWORD = "connection.password";
     private static final String PROPERTIES_FILE = "settings.properties";
+    private static final String DAO_FACTORY = "dao.factory";
 
-    private final static DaoFactory INSTANCE = new DaoFactory();
+    private static DaoFactory instance;
 
-    private Properties properties;
+    protected static Properties properties;
 
-    private DaoFactory() {
+    static {
+        properties = new Properties();
+        try {
+            properties.load(DaoFactory.class.getClassLoader().getResourceAsStream(
+                    PROPERTIES_FILE));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected DaoFactory() {
         properties = new Properties();
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE));
@@ -25,22 +36,27 @@ public class DaoFactory {
         }
     }
 
-    public static DaoFactory getInstance() {
-        return INSTANCE;
-    }
-
-    public UserDao getUserDao() {
-        try {
-            Class clazz = Class.forName(properties.getProperty(USER_DAO));
-            UserDao userDao = (UserDao) clazz.newInstance();
-            userDao.setConnectionFactory(getConnectionFactory());
-            return userDao;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    public static synchronized DaoFactory getInstance() {
+        if (instance == null) {
+            try {
+                Class factoryClass = Class.forName(properties
+                        .getProperty(DAO_FACTORY));
+                instance = (DaoFactory) factoryClass.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
+        return instance;
     }
 
-    private ConnectionFactory getConnectionFactory() {
+    public void init(Properties properties) {
+        this.properties = properties;
+        instance = null;
+    }
+
+    public abstract UserDao getUserDao();
+
+    protected ConnectionFactory getConnectionFactory() {
         String driver = properties.getProperty(CONNECTION_DRIVER);
         String url = properties.getProperty(CONNECTION_URL);
         String user = properties.getProperty(CONNECTION_USER);
