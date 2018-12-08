@@ -17,6 +17,9 @@ public class MainFrameTest extends JFCTestCase {
 
     private MainFrame mainFrame;
 
+    private static final String ID = "ID";
+    private static final String FIRST_NAME = "Имя";
+    private static final String LAST_NAME = "Фамилия";
     private static final String ADD_PANEL = "addPanel";
     private static final String FIRST_NAME_FIELD = "firstNameField";
     private static final String LAST_NAME_FIELD = "lastNameField";
@@ -46,6 +49,12 @@ public class MainFrameTest extends JFCTestCase {
         find(JButton.class, EDIT_BUTTON);
         find(JButton.class, DELETE_BUTTON);
         find(JButton.class, DETAILS_BUTTON);
+
+        JTable table = (JTable) find(JTable.class, USER_TABLE);
+        assertEquals(3, table.getColumnCount());
+        assertEquals(ID,table.getColumnName(0));
+        assertEquals(FIRST_NAME,table.getColumnName(1));
+        assertEquals(LAST_NAME,table.getColumnName(2));
     }
 
     @Test
