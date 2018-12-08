@@ -33,7 +33,7 @@ public class MainFrame extends JFrame {
         mainFrame.setVisible(true);
     }
 
-    public JPanel getContentPanel() {
+    private JPanel getContentPanel() {
         if (Objects.isNull(contentPanel)) {
             contentPanel = new JPanel();
             contentPanel.setLayout(new BorderLayout());
@@ -42,7 +42,7 @@ public class MainFrame extends JFrame {
         return contentPanel;
     }
 
-    public JPanel getBrowsePanel() {
+    private JPanel getBrowsePanel() {
         if (Objects.isNull(browsePanel)) {
             browsePanel = new BrowsePanel(this);
         }
@@ -59,9 +59,9 @@ public class MainFrame extends JFrame {
         panel.repaint();
     }
 
-    public AddPanel getAddPanel() {
+    private AddPanel getAddPanel() {
         if (Objects.isNull(addPanel)) {
-            addPanel = new AddPanel();
+            addPanel = new AddPanel(this);
         }
         return addPanel;
     }

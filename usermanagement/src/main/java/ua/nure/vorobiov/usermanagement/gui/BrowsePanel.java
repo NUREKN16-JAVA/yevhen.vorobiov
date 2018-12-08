@@ -38,14 +38,14 @@ public class BrowsePanel extends JPanel implements ActionListener {
         add(getButtonsPanel(), BorderLayout.SOUTH);
     }
 
-    public JScrollPane getTablePanel() {
+    private JScrollPane getTablePanel() {
         if (Objects.isNull(tablePanel)) {
             tablePanel = new JScrollPane(getUserTable());
         }
         return tablePanel;
     }
 
-    public JPanel getButtonsPanel() {
+    private JPanel getButtonsPanel() {
         if (Objects.isNull(buttonPanel)) {
             buttonPanel = new JPanel();
             buttonPanel.add(getAddButton());
@@ -56,7 +56,7 @@ public class BrowsePanel extends JPanel implements ActionListener {
         return buttonPanel;
     }
 
-    public JButton getAddButton() {
+    private JButton getAddButton() {
         if (Objects.isNull(addButton)) {
             addButton = new JButton();
             addButton.setText("Добаваить");
@@ -66,7 +66,7 @@ public class BrowsePanel extends JPanel implements ActionListener {
         return addButton;
     }
 
-    public JButton getEditButton() {
+    private JButton getEditButton() {
         if (Objects.isNull(editButton)) {
             editButton = new JButton();
             editButton.setText("Изменить");
@@ -76,7 +76,7 @@ public class BrowsePanel extends JPanel implements ActionListener {
         return editButton;
     }
 
-    public JButton getDeleteButton() {
+    private JButton getDeleteButton() {
         if (Objects.isNull(deleteButton)) {
             deleteButton = new JButton();
             deleteButton.setText("Удалить");
@@ -86,7 +86,7 @@ public class BrowsePanel extends JPanel implements ActionListener {
         return deleteButton;
     }
 
-    public JButton getDetailsButton() {
+    private JButton getDetailsButton() {
         if (Objects.isNull(detailsButton)) {
             detailsButton = new JButton();
             detailsButton.setText("Детали");
@@ -105,7 +105,7 @@ public class BrowsePanel extends JPanel implements ActionListener {
         }
     }
 
-    public JTable getUserTable() {
+    private JTable getUserTable() {
         if (Objects.isNull(userTable)) {
             userTable = new JTable();
             userTable.setName(USER_TABLE);
