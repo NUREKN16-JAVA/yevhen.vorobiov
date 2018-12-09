@@ -25,6 +25,12 @@ public class User implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public User(String firstName, String lastName, Date dateOfBirth) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+    }
+
     public Long getId() {
         return id;
     }
@@ -80,15 +86,12 @@ public class User implements Serializable {
             return false;
         }
         User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName) &&
-                Objects.equals(dateOfBirth, user.dateOfBirth);
+        return Objects.equals(id, user.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, dateOfBirth);
+        return Objects.isNull(id) ? 0 : Objects.hash(id);
     }
 
     @Override

@@ -14,7 +14,10 @@ import java.util.Objects;
 
 public abstract class AbstractModifiedPanel extends JPanel implements ActionListener {
 
-    public static final String CANCEL_COMMAND = "cancel";
+    private static final String DATE_PATTERN = "dd.mm.yyyy";
+    protected static final DateFormat format = new SimpleDateFormat(DATE_PATTERN);
+    protected static final String ERROR_TITLE = "Error";
+
     private static final int ROWS = 3;
     private static final int COLS = 2;
     private static final String OK_BUTTON = "okButton";
@@ -23,9 +26,8 @@ public abstract class AbstractModifiedPanel extends JPanel implements ActionList
     private static final String FIRST_NAME_FIELD = "firstNameField";
     private static final String LAST_NAME_FIELD = "lastNameField";
     private static final Color backColor = Color.WHITE;
-    private static final String DATE_PATTERN = "dd.mm.yyyy";
-    protected static final DateFormat format = new SimpleDateFormat(DATE_PATTERN);
-    public static final String OK_COMMAND = "ok";
+    private static final String OK_COMMAND = "ok";
+    private static final String CANCEL_COMMAND = "cancel";
 
     protected final MainFrame parent;
     private JPanel fieldPanel;

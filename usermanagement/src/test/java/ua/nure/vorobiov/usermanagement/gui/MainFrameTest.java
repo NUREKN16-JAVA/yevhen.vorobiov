@@ -1,18 +1,18 @@
 package ua.nure.vorobiov.usermanagement.gui;
 
+import com.mockobjects.dynamic.Mock;
 import junit.extensions.jfcunit.JFCTestCase;
 import junit.extensions.jfcunit.JFCTestHelper;
 import junit.extensions.jfcunit.TestHelper;
-import junit.extensions.jfcunit.eventdata.JTableMouseEventData;
 import junit.extensions.jfcunit.eventdata.MouseEventData;
 import junit.extensions.jfcunit.eventdata.StringEventData;
 import junit.extensions.jfcunit.finder.NamedComponentFinder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ua.nure.vorobiov.usermanagement.User;
 import ua.nure.vorobiov.usermanagement.db.DaoFactory;
-import ua.nure.vorobiov.usermanagement.db.DaoFactoryImpl;
-import ua.nure.vorobiov.usermanagement.db.MockUserDao;
+import ua.nure.vorobiov.usermanagement.db.MockDaoFactory;
 import ua.nure.vorobiov.usermanagement.gui.main.MainFrame;
 import ua.nure.vorobiov.usermanagement.util.Messages;
 
@@ -20,19 +20,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Properties;
 
 public class MainFrameTest extends JFCTestCase {
 
     private MainFrame mainFrame;
+    private Mock userDao;
 
-    private static final String FULL_NAME_FIELD = "fullNameField";
-    private static final String TEST_FULL_NAME = "Ivanov, Ivan";
-    private static final String TEST_FIRST_NAME = "Ivan";
-    private static final String TEST_LAST_NAME = "Ivanov";
+    private static final String TEST_FIRST_NAME = "Mike";
+    private static final String TEST_LAST_NAME = "Mikovich";
     private static final String DATE_PATTERN = "dd.mm.yyyy";
-    private static final String DAO_IMPL_PROPERTY = "dao.ua.nure.vorobiov.usermanagement.db.UserDao";
     private static final String DAO_FACTORY_PROPERTY = "dao.factory";
     private static final String ID = Messages.getString("id");
     private static final String FIRST_NAME = Messages.getString("name");
@@ -49,17 +49,22 @@ public class MainFrameTest extends JFCTestCase {
     private static final String EDIT_BUTTON = "editButton";
     private static final String DELETE_BUTTON = "deleteButton";
     private static final String DETAILS_BUTTON = "detailsButton";
-    private static final String DETAILS_PANEL = "detailsPanel";
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        Properties properties = new Properties();
-        properties.setProperty(DAO_IMPL_PROPERTY, MockUserDao.class.getName());
-        properties.setProperty(DAO_FACTORY_PROPERTY, DaoFactoryImpl.class.getName());
-        DaoFactory.init(properties);
-        setHelper(new JFCTestHelper());
-        mainFrame = new MainFrame();
+        try {
+            Properties properties = new Properties();
+            properties.setProperty(DAO_FACTORY_PROPERTY, MockDaoFactory.class.getName());
+            DaoFactory.init(properties);
+            userDao = ((MockDaoFactory) DaoFactory.getInstance()).getMockUserDao();
+            userDao.expectAndReturn("findAll", new ArrayList<User>());
+            userDao.expectAndReturn("findAll", new ArrayList<User>());
+            setHelper(new JFCTestHelper());
+            mainFrame = new MainFrame();
+        } catch (HeadlessException e) {
+            e.printStackTrace();
+        }
         mainFrame.setVisible(true);
     }
 
@@ -83,10 +88,14 @@ public class MainFrameTest extends JFCTestCase {
     public void testAddUser() {
         int expectedRowsCountBefore = 0;
         int expectedRowsCountAfter = 1;
-        String testFirstName = "Mike";
-        String testLastName = "Mikovich";
+        Date date = new Date();
         DateFormat format = new SimpleDateFormat(DATE_PATTERN);
-        String testDate = format.format(new Date());
+        String testDate = format.format(date);
+        User user = new User(TEST_FIRST_NAME, TEST_LAST_NAME, date);
+        User expectedUser = new User(1L, TEST_FIRST_NAME, TEST_LAST_NAME, date);
+
+        userDao.expectAndReturn("create", user, expectedUser);
+        userDao.expectAndReturn("findAll", Collections.singletonList(expectedUser));
 
         JTable table = (JTable) find(JTable.class, USER_TABLE);
         assertEquals(expectedRowsCountBefore, table.getRowCount());
@@ -101,8 +110,8 @@ public class MainFrameTest extends JFCTestCase {
         JButton okButton = (JButton) find(JButton.class, OK_BUTTON);
         find(JButton.class, CANCEL_BUTTON);
 
-        getHelper().sendString(new StringEventData(this, firstNameField, testFirstName));
-        getHelper().sendString(new StringEventData(this, lastNameField, testLastName));
+        getHelper().sendString(new StringEventData(this, firstNameField, TEST_FIRST_NAME));
+        getHelper().sendString(new StringEventData(this, lastNameField, TEST_LAST_NAME));
         getHelper().sendString(new StringEventData(this, dateOfBirthField, testDate));
         getHelper().enterClickAndLeave(new MouseEventData(this, okButton));
 
@@ -111,32 +120,11 @@ public class MainFrameTest extends JFCTestCase {
         assertEquals(expectedRowsCountAfter, table.getRowCount());
     }
 
-    @Test
-    public void testGetUserDetails() {
-        int rowIndex = 1;
-        int columnIndex = 0;
-        int numberOfClicks = 1;
-
-        JTable table = (JTable) find(JTable.class, USER_TABLE);
-        getHelper().enterClickAndLeave(new JTableMouseEventData(this, table, rowIndex, columnIndex, numberOfClicks));
-
-        JButton detailsButton = (JButton) find(JButton.class, DETAILS_BUTTON);
-        getHelper().enterClickAndLeave(new MouseEventData(this, detailsButton));
-        find(JPanel.class, DETAILS_PANEL);
-
-        JTextField fullNameField = (JTextField) find(JTextField.class, FULL_NAME_FIELD);
-        JButton closeButton = (JButton) find(JButton.class, "closeButton");
-        String actualFullName = fullNameField.getText();
-
-        getHelper().enterClickAndLeave(new MouseEventData(this, closeButton));
-        find(JPanel.class, BROWSE_PANEL);
-
-        assertEquals(TEST_FULL_NAME, actualFullName);
-    }
 
     @After
     public void tearDown() throws Exception {
         super.tearDown();
+        userDao.verify();
         mainFrame.setVisible(false);
         TestHelper.cleanUp(this);
     }

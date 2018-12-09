@@ -38,7 +38,7 @@ public class UpdatePanel extends AbstractModifiedPanel {
         try {
             parent.getUserDao().update(user);
         } catch (DatabaseException e1) {
-            JOptionPane.showMessageDialog(this, e1.getMessage(), "Error",
+            JOptionPane.showMessageDialog(this, e1.getMessage(), ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
         user = null;

@@ -12,7 +12,7 @@ import java.text.ParseException;
 public class AddPanel extends AbstractModifiedPanel {
 
 
-    public static final String ADD_PANEL = "addPanel";
+    private static final String ADD_PANEL = "addPanel";
 
     public AddPanel(MainFrame parent) {
         super(parent);
@@ -34,7 +34,7 @@ public class AddPanel extends AbstractModifiedPanel {
         try {
             parent.getUserDao().create(user);
         } catch (DatabaseException e1) {
-            JOptionPane.showMessageDialog(this, e1.getMessage(), "Error",
+            JOptionPane.showMessageDialog(this, e1.getMessage(), ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
     }
