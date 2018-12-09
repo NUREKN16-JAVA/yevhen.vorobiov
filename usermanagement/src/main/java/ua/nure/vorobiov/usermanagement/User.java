@@ -90,4 +90,9 @@ public class User implements Serializable {
     public int hashCode() {
         return Objects.hash(id, firstName, lastName, dateOfBirth);
     }
+
+    @Override
+    public String toString() {
+        return getFullName();
+    }
 }

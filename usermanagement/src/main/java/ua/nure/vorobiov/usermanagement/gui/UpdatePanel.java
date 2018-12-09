@@ -9,20 +9,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.ParseException;
 
-public class AddPanel extends AbstractModifiedPanel {
+public class UpdatePanel extends AbstractModifiedPanel {
 
+    private static final String UPDATE_PANEL = "updatePanel";
 
-    public static final String ADD_PANEL = "addPanel";
+    private User user;
 
-    public AddPanel(MainFrame parent) {
+    public UpdatePanel(MainFrame parent) {
         super(parent);
-        this.setName(ADD_PANEL);
+        this.setName(UPDATE_PANEL);
     }
 
+    @Override
+    protected String getConfirmButtonText() {
+        return Messages.getString("editButton");
+    }
 
     @Override
     protected void performAction() {
-        User user = new User();
         user.setFirstName(getFirstNameField().getText());
         user.setLastName(getLastNameField().getText());
         try {
@@ -32,17 +36,22 @@ public class AddPanel extends AbstractModifiedPanel {
             return;
         }
         try {
-            parent.getUserDao().create(user);
+            parent.getUserDao().update(user);
         } catch (DatabaseException e1) {
             JOptionPane.showMessageDialog(this, e1.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
+        user = null;
     }
 
-
-    @Override
-    protected String getConfirmButtonText() {
-        return Messages.getString("addButton");
+    public void setUser(User user) {
+        this.user = user;
+        setFieldsValue(user);
     }
 
+    private void setFieldsValue(User user) {
+        firstNameField.setText(user.getFirstName());
+        lastNameField.setText(user.getLastName());
+        dateOfBirthField.setText(format.format(user.getDateOfBirth()));
+    }
 }

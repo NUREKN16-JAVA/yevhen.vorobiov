@@ -1,9 +1,9 @@
 package ua.nure.vorobiov.usermanagement.gui.main;
 
+import ua.nure.vorobiov.usermanagement.User;
 import ua.nure.vorobiov.usermanagement.db.DaoFactory;
 import ua.nure.vorobiov.usermanagement.db.UserDao;
-import ua.nure.vorobiov.usermanagement.gui.AddPanel;
-import ua.nure.vorobiov.usermanagement.gui.BrowsePanel;
+import ua.nure.vorobiov.usermanagement.gui.*;
 import ua.nure.vorobiov.usermanagement.util.Messages;
 
 import javax.swing.*;
@@ -17,7 +17,9 @@ public class MainFrame extends JFrame {
 
     private JPanel contentPanel;
     private JPanel browsePanel;
-    private AddPanel addPanel;
+    private AbstractModifiedPanel addPanel;
+    private DetailsPanel detailsPanel;
+    private AbstractModifiedPanel updatePanel;
     private UserDao userDao;
 
     public MainFrame() throws HeadlessException {
@@ -69,7 +71,7 @@ public class MainFrame extends JFrame {
         panel.repaint();
     }
 
-    private AddPanel getAddPanel() {
+    private AbstractModifiedPanel getAddPanel() {
         if (Objects.isNull(addPanel)) {
             addPanel = new AddPanel(this);
         }
@@ -78,5 +80,31 @@ public class MainFrame extends JFrame {
 
     public void showBrowsePanel() {
         showPanel(getBrowsePanel());
+    }
+
+    public void showDetailsPanel(User user) {
+        JPanel detailsPanel = getDetailsPanel();
+        ((DetailsPanel) detailsPanel).showUserDetails(user);
+        showPanel(detailsPanel);
+    }
+
+    private DetailsPanel getDetailsPanel() {
+        if (Objects.isNull(detailsPanel)) {
+            detailsPanel = new DetailsPanel(this);
+        }
+        return detailsPanel;
+    }
+
+    public void showUpdatePanel(User user) {
+        JPanel updatePanel = getUpdatePanel();
+        ((UpdatePanel) updatePanel).setUser(user);
+        showPanel(updatePanel);
+    }
+
+    public AbstractModifiedPanel getUpdatePanel() {
+        if (Objects.isNull(updatePanel)) {
+            updatePanel = new UpdatePanel(this);
+        }
+        return updatePanel;
     }
 }

@@ -23,12 +23,6 @@ public abstract class DaoFactory {
     }
 
     protected DaoFactory() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static synchronized DaoFactory getInstance() {

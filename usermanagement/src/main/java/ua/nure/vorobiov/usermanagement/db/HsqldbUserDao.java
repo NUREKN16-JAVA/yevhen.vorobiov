@@ -145,7 +145,7 @@ class HsqldbUserDao implements UserDao {
         long id = resultSet.getLong(1);
         String firstName = resultSet.getString(2);
         String lastName = resultSet.getString(3);
-        Date dateOfBirth = resultSet.getDate(4);
+        java.util.Date dateOfBirth = new java.util.Date(resultSet.getDate(4).getTime());
         return new User(id, firstName, lastName, dateOfBirth);
     }
 }
