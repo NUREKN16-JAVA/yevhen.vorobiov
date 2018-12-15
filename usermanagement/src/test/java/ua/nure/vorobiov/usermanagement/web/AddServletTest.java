@@ -5,23 +5,22 @@ import ua.nure.vorobiov.usermanagement.User;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class EditServletTest extends MockServletTestCase {
-
+public class AddServletTest extends MockServletTestCase {
     private static final String TEST_FIRST_NAME = "John";
     private static final String TEST_LAST_NAME = "Doe";
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        createServlet(EditServlet.class);
+        createServlet(AddServlet.class);
     }
 
-    public void testEdit() {
+    public void testAdd() {
         Date date = new Date();
+        User newUser = new User(TEST_FIRST_NAME, TEST_LAST_NAME, date);
         User user = new User(1000L, TEST_FIRST_NAME, TEST_LAST_NAME, date);
-        getMockUserDao().expect("update", user);
+        getMockUserDao().expectAndReturn("create", newUser, user);
 
-        addRequestParameter("id", "1000");
         addRequestParameter("firstName", TEST_FIRST_NAME);
         addRequestParameter("lastName", TEST_LAST_NAME);
         addRequestParameter("date", DateFormat.getDateInstance().format(date));
@@ -29,10 +28,9 @@ public class EditServletTest extends MockServletTestCase {
         doPost();
     }
 
-    public void testEditWithEmptyFirstName() {
+    public void testAddWithEmptyFirstName() {
         Date date = new Date();
 
-        addRequestParameter("id", "1000");
         addRequestParameter("lastName", TEST_LAST_NAME);
         addRequestParameter("date", DateFormat.getDateInstance().format(date));
         addRequestParameter("okButton", "Ok");
@@ -41,10 +39,9 @@ public class EditServletTest extends MockServletTestCase {
         assertNotNull("Could not ind error message", errorMessage);
     }
 
-    public void testEditWithEmptyLastName() {
+    public void testAddWithEmptyLastName() {
         Date date = new Date();
 
-        addRequestParameter("id", "1000");
         addRequestParameter("firstName", TEST_FIRST_NAME);
         addRequestParameter("date", DateFormat.getDateInstance().format(date));
         addRequestParameter("okButton", "Ok");
@@ -53,8 +50,7 @@ public class EditServletTest extends MockServletTestCase {
         assertNotNull("Could not ind error message", errorMessage);
     }
 
-    public void testEditWithEmptyDate() {
-        addRequestParameter("id", "1000");
+    public void testAddWithEmptyDate() {
         addRequestParameter("firstName", TEST_FIRST_NAME);
         addRequestParameter("lastName", TEST_LAST_NAME);
         addRequestParameter("okButton", "Ok");
@@ -63,8 +59,7 @@ public class EditServletTest extends MockServletTestCase {
         assertNotNull("Could not ind error message", errorMessage);
     }
 
-    public void testEditWithIncorrectDate() {
-        addRequestParameter("id", "1000");
+    public void testAddWithIncorrectDate() {
         addRequestParameter("firstName", TEST_FIRST_NAME);
         addRequestParameter("lastName", TEST_LAST_NAME);
         addRequestParameter("okButton", "Ok");
