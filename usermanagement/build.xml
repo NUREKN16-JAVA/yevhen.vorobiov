@@ -32,7 +32,7 @@
     </target>
 
     <target name="compile" depends="init">
-        <javac srcdir="${main-java-dir}" destdir="${build-dir}"/>
+        <javac srcdir="${main-java-dir}" destdir="${classes-dir}"/>
     </target>
 
     <target name="war.exploded" depends="compile">
