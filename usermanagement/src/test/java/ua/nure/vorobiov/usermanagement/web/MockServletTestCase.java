@@ -13,11 +13,11 @@ public abstract class MockServletTestCase extends BasicServletTestCaseAdapter {
 
     private Mock mockUserDao;
 
-    public Mock getMockUserDao() {
+    protected Mock getMockUserDao() {
         return mockUserDao;
     }
 
-    public void setMockUserDao(Mock mockUserDao) {
+    protected void setMockUserDao(Mock mockUserDao) {
         this.mockUserDao = mockUserDao;
     }
 
