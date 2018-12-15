@@ -10,8 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Objects;
 
 public class BrowseServlet extends HttpServlet {
+
+    private static final String BROWSE_JSP = "/browse.jsp";
+    private static final String ERROR_ATTRIBUTE = "error";
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -33,7 +37,24 @@ public class BrowseServlet extends HttpServlet {
     }
 
     private void edit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String idString = req.getParameter("id");
+        if (Objects.isNull(idString) || idString.trim().isEmpty()) {
+            redirectBackWithError(req, resp, "You should choose user");
+            return;
+        }
+        try {
+            User user = DaoFactory.getInstance().getUserDao().find(Long.parseLong(idString));
+            req.getSession(true).setAttribute("user", user);
+        } catch (Exception e) {
+            redirectBackWithError(req, resp, "Error :" + e.toString());
+            return;
+        }
+        req.getRequestDispatcher("/edit").forward(req, resp);
+    }
 
+    private void redirectBackWithError(HttpServletRequest req, HttpServletResponse resp, String s) throws ServletException, IOException {
+        req.setAttribute(ERROR_ATTRIBUTE, s);
+        req.getRequestDispatcher(BROWSE_JSP).forward(req, resp);
     }
 
     private void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -48,7 +69,7 @@ public class BrowseServlet extends HttpServlet {
         try {
             Collection<User> users = DaoFactory.getInstance().getUserDao().findAll();
             req.getSession(true).setAttribute("users", users);
-            req.getRequestDispatcher("/browse.jsp").forward(req, resp);
+            req.getRequestDispatcher(BROWSE_JSP).forward(req, resp);
         } catch (DatabaseException e) {
             throw new ServletException(e);
         }
