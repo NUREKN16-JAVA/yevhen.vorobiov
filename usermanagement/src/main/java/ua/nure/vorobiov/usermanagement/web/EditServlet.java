@@ -22,9 +22,9 @@ public class EditServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getParameter("okButton") != null) {
+        if (Objects.nonNull(req.getParameter("okButton"))) {
             updateUser(req, resp);
-        } else if (req.getParameter("cancelButton") != null) {
+        } else if (Objects.nonNull(req.getParameter("cancelButton"))) {
             cancelEdit(req, resp);
         } else {
             showPage(req, resp);

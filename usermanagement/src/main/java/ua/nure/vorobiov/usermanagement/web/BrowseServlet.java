@@ -19,13 +19,13 @@ public class BrowseServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getParameter("addButton") != null) {
+        if (Objects.nonNull(req.getParameter("addButton"))) {
             add(req, resp);
-        } else if (req.getParameter("editButton") != null) {
+        } else if (Objects.nonNull(req.getParameter("editButton"))) {
             edit(req, resp);
-        } else if (req.getParameter("deleteButton") != null) {
+        } else if (Objects.nonNull(req.getParameter("deleteButton"))) {
             delete(req, resp);
-        } else if (req.getParameter("detailsButton") != null) {
+        } else if (Objects.nonNull(req.getParameter("detailsButton"))) {
             details(req, resp);
         } else {
             browse(req, resp);
@@ -37,9 +37,32 @@ public class BrowseServlet extends HttpServlet {
     }
 
     private void edit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String idString = req.getParameter("id");
-        if (Objects.isNull(idString) || idString.trim().isEmpty()) {
-            redirectBackWithError(req, resp, "You should choose user");
+        putUserToSesseonAndRedirect(req, resp, "/edit");
+    }
+
+    private void redirectBackWithError(HttpServletRequest req, HttpServletResponse resp, String s) throws ServletException, IOException {
+        req.setAttribute(ERROR_ATTRIBUTE, s);
+        req.getRequestDispatcher(BROWSE_JSP).forward(req, resp);
+    }
+
+    private void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String idString = getIdString(req, resp);
+        if (Objects.isNull(idString)) {
+            return;
+        }
+        try {
+            User user = DaoFactory.getInstance().getUserDao().find(Long.parseLong(idString));
+            DaoFactory.getInstance().getUserDao().delete(user);
+        } catch (DatabaseException e) {
+            redirectBackWithError(req, resp, "Error :" + e.toString());
+            return;
+        }
+        resp.sendRedirect("/browse");
+    }
+
+    private void putUserToSesseonAndRedirect(HttpServletRequest req, HttpServletResponse resp, String pathToRedirect) throws ServletException, IOException {
+        String idString = getIdString(req, resp);
+        if (Objects.isNull(idString)) {
             return;
         }
         try {
@@ -49,20 +72,20 @@ public class BrowseServlet extends HttpServlet {
             redirectBackWithError(req, resp, "Error :" + e.toString());
             return;
         }
-        req.getRequestDispatcher("/edit").forward(req, resp);
+        req.getRequestDispatcher(pathToRedirect).forward(req, resp);
     }
 
-    private void redirectBackWithError(HttpServletRequest req, HttpServletResponse resp, String s) throws ServletException, IOException {
-        req.setAttribute(ERROR_ATTRIBUTE, s);
-        req.getRequestDispatcher(BROWSE_JSP).forward(req, resp);
-    }
-
-    private void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+    private String getIdString(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String idString = req.getParameter("id");
+        if (Objects.isNull(idString) || idString.trim().isEmpty()) {
+            redirectBackWithError(req, resp, "You should choose user");
+            return null;
+        }
+        return idString;
     }
 
     private void details(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        putUserToSesseonAndRedirect(req, resp, "/details");
     }
 
     private void browse(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

@@ -20,7 +20,7 @@
         </c:forEach>
     </table>
     <input type="submit" name="addButton" value="Add">
-    <input type="submit" name="deleteButton" value="Delete">
+    <input type="submit" name="deleteButton" value="Delete" id="deleteButton">
     <input type="submit" name="editButton" value="Edit">
     <input type="submit" name="detailsButton" value="Details">
 </form>
@@ -29,5 +29,22 @@
         alert('${requestScope.error}')
     </script>
 </c:if>
+<script>
+    var deleteButton = document.getElementById("deleteButton");
+    deleteButton.addEventListener("click", function (e) {
+        if (!isCheck("id")) {
+            e.preventDefault();
+            alert("You should choose user");
+            return;
+        }
+        if (!confirm("Do you really want to delete this user?")) {
+            e.preventDefault();
+        }
+    });
+
+    function isCheck(name) {
+        return document.querySelector('input[name="' + name + '"]:checked');
+    }
+</script>
 </body>
 </html>
