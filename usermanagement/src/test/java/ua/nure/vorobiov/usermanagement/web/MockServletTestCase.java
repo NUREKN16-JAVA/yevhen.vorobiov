@@ -9,6 +9,13 @@ import java.util.Properties;
 
 public abstract class MockServletTestCase extends BasicServletTestCaseAdapter {
 
+    protected static final String ID_ATTRIBUTE = "id";
+    protected static final String TEST_FIRST_NAME = "John";
+    protected static final String TEST_LAST_NAME = "Doe";
+    protected static final String FIRST_NAME_ATTRIBUTE = "firstName";
+    protected static final String LAST_NAME_ATTRIBUTE = "lastName";
+    protected static final String DATE_ATTRIBUTE = "date";
+    protected static final String OK_BUTTON = "okButton";
     private static final String DAO_FACTORY_PROPERTY = "dao.factory";
 
     private Mock mockUserDao;

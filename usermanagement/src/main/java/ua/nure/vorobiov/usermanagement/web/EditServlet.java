@@ -19,6 +19,8 @@ public class EditServlet extends HttpServlet {
 
     private static final String DATE_PATTERN = "dd.mm.yyyy";
     private static final DateFormat FORMATER = new SimpleDateFormat(DATE_PATTERN);
+    private static final String EDIT_JSP = "/edit.jsp";
+    private static final String BROWSE_SERVLET = "/browse";
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -32,15 +34,15 @@ public class EditServlet extends HttpServlet {
     }
 
     protected void showPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/edit.jsp").forward(req, resp);
+        req.getRequestDispatcher(EDIT_JSP).forward(req, resp);
     }
 
     private void cancelEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/browse").forward(req, resp);
+        req.getRequestDispatcher(BROWSE_SERVLET).forward(req, resp);
     }
 
     private void updateUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = null;
+        User user;
         try {
             user = getUserFromRequest(req);
         } catch (ValidationException e) {
@@ -54,7 +56,7 @@ public class EditServlet extends HttpServlet {
             e.printStackTrace();
             throw new ServletException(e);
         }
-        req.getRequestDispatcher("/browse").forward(req, resp);
+        req.getRequestDispatcher(BROWSE_SERVLET).forward(req, resp);
     }
 
     protected void processUser(User user) throws DatabaseException {

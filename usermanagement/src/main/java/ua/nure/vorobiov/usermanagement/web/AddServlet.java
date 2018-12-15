@@ -11,9 +11,11 @@ import java.io.IOException;
 
 public class AddServlet extends EditServlet {
 
+    private static final String ADD_JSP = "/add.jsp";
+
     @Override
     protected void showPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/add.jsp").forward(req, resp);
+        req.getRequestDispatcher(ADD_JSP).forward(req, resp);
     }
 
     @Override

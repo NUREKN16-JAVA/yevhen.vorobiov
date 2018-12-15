@@ -16,6 +16,10 @@ public class BrowseServlet extends HttpServlet {
 
     private static final String BROWSE_JSP = "/browse.jsp";
     private static final String ERROR_ATTRIBUTE = "error";
+    private static final String BROWSE_SERVLET = "/browse";
+    private static final String DETAILS_SERVLET = "/details";
+    private static final String EDIT_SERVLET = "/edit";
+    private static final String ADD_SERVLET = "/add";
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -33,11 +37,11 @@ public class BrowseServlet extends HttpServlet {
     }
 
     private void add(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/add").forward(req, resp);
+        req.getRequestDispatcher(ADD_SERVLET).forward(req, resp);
     }
 
     private void edit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        putUserToSesseonAndRedirect(req, resp, "/edit");
+        putUserToSesseonAndRedirect(req, resp, EDIT_SERVLET);
     }
 
     private void redirectBackWithError(HttpServletRequest req, HttpServletResponse resp, String s) throws ServletException, IOException {
@@ -57,7 +61,7 @@ public class BrowseServlet extends HttpServlet {
             redirectBackWithError(req, resp, "Error :" + e.toString());
             return;
         }
-        resp.sendRedirect("/browse");
+        resp.sendRedirect(BROWSE_SERVLET);
     }
 
     private void putUserToSesseonAndRedirect(HttpServletRequest req, HttpServletResponse resp, String pathToRedirect) throws ServletException, IOException {
@@ -85,7 +89,7 @@ public class BrowseServlet extends HttpServlet {
     }
 
     private void details(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        putUserToSesseonAndRedirect(req, resp, "/details");
+        putUserToSesseonAndRedirect(req, resp, DETAILS_SERVLET);
     }
 
     private void browse(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

@@ -12,9 +12,11 @@ public class BrowseServletTest extends MockServletTestCase {
 
     private static final String FIND_ALL_METHOD = "findAll";
     private static final String USERS_ATTRIBUTE = "users";
-    private static final String TEST_FIRST_NAME = "John";
-    private static final String TEST_LAST_NAME = "Doe";
     private static final long TEST_ID = 1000L;
+    private static final String TEST_ID_STRING = "1000";
+    private static final String EDIT_BUTTON = "editButton";
+    private static final String DETAILS_BUTTON = "detailsButton";
+    private static final String DELETE_BUTTON = "deleteButton";
 
     @Override
     protected void setUp() throws Exception {
@@ -37,8 +39,8 @@ public class BrowseServletTest extends MockServletTestCase {
     public void testEdit() {
         User expectedUser = new User(TEST_ID, TEST_FIRST_NAME, TEST_LAST_NAME, new Date());
         getMockUserDao().expectAndReturn("find", TEST_ID, expectedUser);
-        addRequestParameter("editButton", "Edit");
-        addRequestParameter("id", "1000");
+        addRequestParameter(EDIT_BUTTON, "Edit");
+        addRequestParameter(ID_ATTRIBUTE, TEST_ID_STRING);
         doPost();
         User actualUser = (User) getWebMockObjectFactory().getMockSession().getAttribute("user");
         assertNotNull("Could not find user in session", actualUser);
@@ -48,8 +50,8 @@ public class BrowseServletTest extends MockServletTestCase {
     public void testDetails() {
         User expectedUser = new User(TEST_ID, TEST_FIRST_NAME, TEST_LAST_NAME, new Date());
         getMockUserDao().expectAndReturn("find", TEST_ID, expectedUser);
-        addRequestParameter("detailsButton", "Details");
-        addRequestParameter("id", "1000");
+        addRequestParameter(DETAILS_BUTTON, "Details");
+        addRequestParameter(ID_ATTRIBUTE, TEST_ID_STRING);
         doPost();
         User actualUser = (User) getWebMockObjectFactory().getMockSession().getAttribute("user");
         assertNotNull("Could not find user in session", actualUser);
@@ -60,16 +62,16 @@ public class BrowseServletTest extends MockServletTestCase {
         User expectedUser = new User(TEST_ID, TEST_FIRST_NAME, TEST_LAST_NAME, new Date());
         getMockUserDao().expectAndReturn("find", TEST_ID, expectedUser);
         getMockUserDao().expect("delete", expectedUser);
-        addRequestParameter("deleteButton", "Delete");
-        addRequestParameter("id", "1000");
+        addRequestParameter(DELETE_BUTTON, "Delete");
+        addRequestParameter(ID_ATTRIBUTE, TEST_ID_STRING);
         doPost();
     }
 
     public void testDeleteWithIncorrectId() {
         String expectedErrorMessage = "Incorrect id";
         getMockUserDao().expectAndThrow("find", TEST_ID, new DatabaseException(expectedErrorMessage));
-        addRequestParameter("deleteButton", "Delete");
-        addRequestParameter("id", "1000");
+        addRequestParameter(DELETE_BUTTON, "Delete");
+        addRequestParameter(ID_ATTRIBUTE, TEST_ID_STRING);
         doPost();
         String errorMessage = (String) getWebMockObjectFactory().getMockRequest().getAttribute("error");
         assertNotNull("Could not find error message", errorMessage);
