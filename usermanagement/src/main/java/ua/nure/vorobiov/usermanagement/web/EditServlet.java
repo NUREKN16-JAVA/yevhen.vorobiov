@@ -12,9 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 public class EditServlet extends HttpServlet {
+
+    private static final String DATE_PATTERN = "dd.mm.yyyy";
+    private static final DateFormat FORMATER = new SimpleDateFormat(DATE_PATTERN);
+
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getParameter("okButton") != null) {
@@ -77,7 +82,7 @@ public class EditServlet extends HttpServlet {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         try {
-            user.setDateOfBirth(DateFormat.getDateInstance().parse(dateString));
+            user.setDateOfBirth(FORMATER.parse(dateString));
         } catch (ParseException e) {
             throw new ValidationException("Date format is incorrect");
         }
