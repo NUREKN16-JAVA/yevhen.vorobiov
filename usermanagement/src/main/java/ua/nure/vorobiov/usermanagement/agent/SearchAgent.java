@@ -18,10 +18,13 @@ import java.util.Collection;
 public class SearchAgent extends Agent {
 
     private AID[] aids;
+    private SearchGui searchGui;
 
     @Override
     protected void setup() {
         super.setup();
+        searchGui = new SearchGui(this);
+        searchGui.setVisible(true);
         System.out.println(getAID().getName() + " started");
 
         DFAgentDescription description = new DFAgentDescription();
@@ -64,6 +67,8 @@ public class SearchAgent extends Agent {
         } catch (FIPAException e) {
             e.printStackTrace();
         }
+        searchGui.setVisible(false);
+        searchGui.dispose();
         super.takeDown();
     }
 
