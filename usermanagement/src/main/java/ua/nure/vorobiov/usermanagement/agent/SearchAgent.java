@@ -1,7 +1,6 @@
 package ua.nure.vorobiov.usermanagement.agent;
 
 
-import org.dbunit.util.search.SearchException;
 
 import jade.core.AID;
 import jade.core.Agent;
@@ -38,7 +37,7 @@ public class SearchAgent extends Agent {
         }
     }
 
-    private void showUsers(Collection<User> users) {
+    void showUsers(Collection<User> users) {
 
     }
 }
