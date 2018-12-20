@@ -3,6 +3,7 @@ package ua.nure.vorobiov.usermanagement.agent;
 
 import org.dbunit.util.search.SearchException;
 
+import jade.core.AID;
 import jade.core.Agent;
 import ua.nure.vorobiov.usermanagement.User;
 import ua.nure.vorobiov.usermanagement.db.DaoFactory;
@@ -30,6 +31,7 @@ public class SearchAgent extends Agent {
             if (users.size() > 0) {
                 showUsers(users);
             } else {
+                addBehaviour(new SearchRequestBehavior(new AID[]{}, firstName, lastName));
             }
         } catch (DatabaseException e) {
             throw new SearchException(e);
