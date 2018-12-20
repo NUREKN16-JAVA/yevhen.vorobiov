@@ -3,6 +3,7 @@ package ua.nure.vorobiov.usermanagement.agent;
 
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -11,9 +12,12 @@ import ua.nure.vorobiov.usermanagement.User;
 import ua.nure.vorobiov.usermanagement.db.DaoFactory;
 import ua.nure.vorobiov.usermanagement.db.DatabaseException;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public class SearchAgent extends Agent {
+
+    private AID[] aids;
 
     @Override
     protected void setup() {
@@ -28,10 +32,27 @@ public class SearchAgent extends Agent {
         description.addServices(serviceDescription);
 
         try {
-            DFService.register(this,description);
+            DFService.register(this, description);
         } catch (FIPAException e) {
             e.printStackTrace();
         }
+
+        addBehaviour(new TickerBehaviour(this, 60000) {
+            @Override
+            protected void onTick() {
+                DFAgentDescription agentDescription = new DFAgentDescription();
+                ServiceDescription serviceDescription1 = new ServiceDescription();
+                serviceDescription1.setType("searching");
+                agentDescription.addServices(serviceDescription1);
+                try {
+                    DFAgentDescription[] descriptions = DFService.search(myAgent, agentDescription);
+                    aids = Arrays.stream(descriptions).map(DFAgentDescription::getName).toArray(AID[]::new);
+                } catch (FIPAException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         addBehaviour(new RequestServer());
     }
 
@@ -52,7 +73,7 @@ public class SearchAgent extends Agent {
             if (users.size() > 0) {
                 showUsers(users);
             } else {
-                addBehaviour(new SearchRequestBehavior(new AID[]{}, firstName, lastName));
+                addBehaviour(new SearchRequestBehavior(aids, firstName, lastName));
             }
         } catch (DatabaseException e) {
             throw new SearchException(e);
