@@ -7,9 +7,12 @@ import ua.nure.vorobiov.usermanagement.db.DaoFactory;
 import ua.nure.vorobiov.usermanagement.db.DatabaseException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.StringTokenizer;
+import java.util.function.Function;
 
 public class RequestServer extends CyclicBehaviour {
 
@@ -29,7 +32,22 @@ public class RequestServer extends CyclicBehaviour {
     }
 
     private Collection<User> parseMessage(ACLMessage message) {
-        return null;
+        Collection<User> users = new LinkedList<>();
+        String content = message.getContent();
+        if (Objects.nonNull(content)) {
+            Arrays.stream(content.split(";")).map(getUserMappingFunction()).forEach(users::add);
+        }
+        return users;
+    }
+
+    private Function<String, User> getUserMappingFunction() {
+        return s -> {
+            StringTokenizer tokenizer = new StringTokenizer(s, ",");
+            String id = tokenizer.nextToken();
+            String firstName = tokenizer.nextToken();
+            String lastName = tokenizer.nextToken();
+            return new User(Long.parseLong(id), firstName, lastName, null);
+        };
     }
 
     private ACLMessage createReply(ACLMessage message) {

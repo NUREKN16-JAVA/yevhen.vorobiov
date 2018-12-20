@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class User implements Serializable {
 
-    public static final String FULL_NAME_SEPARATOR = ", ";
+    private static final String FULL_NAME_SEPARATOR = ", ";
     private Long id;
     private String firstName;
     private String lastName;
@@ -18,14 +18,14 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, Date dateOfBirth) {
-        this.id = id;
+    public User(String firstName, String lastName, Date dateOfBirth) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
     }
 
-    public User(String firstName, String lastName, Date dateOfBirth) {
+    public User(Long id, String firstName, String lastName, Date dateOfBirth) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
