@@ -49,7 +49,11 @@ public class SearchAgent extends Agent {
                 agentDescription.addServices(serviceDescription1);
                 try {
                     DFAgentDescription[] descriptions = DFService.search(myAgent, agentDescription);
-                    aids = Arrays.stream(descriptions).map(DFAgentDescription::getName).toArray(AID[]::new);
+                    AID selfAid = getAID();
+                    aids = Arrays.stream(descriptions)
+                            .map(DFAgentDescription::getName)
+                            .filter(aid -> !selfAid.equals(aid))
+                            .toArray(AID[]::new);
                 } catch (FIPAException e) {
                     e.printStackTrace();
                 }
@@ -86,6 +90,6 @@ public class SearchAgent extends Agent {
     }
 
     void showUsers(Collection<User> users) {
-
+        searchGui.addUsers(users);
     }
 }
